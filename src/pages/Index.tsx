@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -7,6 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import Icon from '@/components/ui/icon';
 
 const Index = () => {
+  const navigate = useNavigate();
   const [expandedCategory, setExpandedCategory] = useState<number | null>(null);
 
   const categories = [
@@ -171,6 +173,16 @@ const Index = () => {
       </div>
 
       <main className="container mx-auto px-4 py-6">
+        <div className="mb-6 flex justify-end">
+          <Button 
+            className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 shadow-lg"
+            onClick={() => navigate('/create-topic')}
+          >
+            <Icon name="Plus" size={18} className="mr-2" />
+            Создать тему
+          </Button>
+        </div>
+
         <div className="grid lg:grid-cols-4 gap-6">
           <div className="lg:col-span-3 space-y-4">
             {categories.map((category) => (
@@ -200,7 +212,11 @@ const Index = () => {
                 {expandedCategory === category.id && (
                   <div className="divide-y divide-border">
                     {category.subforums.map((subforum) => (
-                      <div key={subforum.name} className="p-4 hover:bg-muted/50 transition-colors cursor-pointer">
+                      <div 
+                        key={subforum.name} 
+                        className="p-4 hover:bg-muted/50 transition-colors cursor-pointer"
+                        onClick={() => navigate('/topic/1')}
+                      >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3 flex-1">
                             <div className="w-8 h-8 bg-muted rounded-lg flex items-center justify-center">
@@ -234,7 +250,10 @@ const Index = () => {
                       </div>
                     </div>
                     <div className="text-sm">
-                      <div className="flex items-center gap-2">
+                      <div 
+                        className="flex items-center gap-2 cursor-pointer hover:opacity-80"
+                        onClick={() => navigate('/topic/1')}
+                      >
                         <Avatar className="w-6 h-6">
                           <AvatarFallback className="text-xs bg-gradient-to-br from-gray-700 to-gray-800 text-white">
                             {category.lastPost.author.slice(0, 2).toUpperCase()}
