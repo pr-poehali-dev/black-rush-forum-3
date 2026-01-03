@@ -3,308 +3,344 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Separator } from '@/components/ui/separator';
 import Icon from '@/components/ui/icon';
 
 const Index = () => {
-  const [activeSection, setActiveSection] = useState('home');
+  const [expandedCategory, setExpandedCategory] = useState<number | null>(null);
 
-  const topics = [
+  const categories = [
     {
       id: 1,
-      title: 'Как правильно настроить production окружение?',
-      author: 'DarkCoder',
-      category: 'Технические вопросы',
-      replies: 47,
-      views: 1283,
-      likes: 89,
-      time: '2 часа назад',
-      tags: ['production', 'deployment', 'devops']
+      name: 'Новости и объявления',
+      icon: 'Megaphone',
+      color: 'from-red-500 to-orange-500',
+      description: 'Официальные новости проекта',
+      topics: 145,
+      posts: 2341,
+      lastPost: { author: 'Администрация', title: 'Обновление сервера 3.0', time: '2 часа назад' },
+      subforums: [
+        { name: 'Новости проекта', topics: 89, posts: 1432 },
+        { name: 'Объявления', topics: 56, posts: 909 }
+      ]
     },
     {
       id: 2,
-      title: 'Обновление платформы: что нового в версии 2.0',
-      author: 'AdminTeam',
-      category: 'Новости',
-      replies: 156,
-      views: 5421,
-      likes: 342,
-      time: '5 часов назад',
-      tags: ['новости', 'обновление', 'анонс']
+      name: 'Общение',
+      icon: 'MessageCircle',
+      color: 'from-blue-500 to-cyan-500',
+      description: 'Обсуждения и флуд',
+      topics: 3421,
+      posts: 45678,
+      lastPost: { author: 'Player123', title: 'Лучшие моменты в игре', time: '5 минут назад' },
+      subforums: [
+        { name: 'Общий чат', topics: 2134, posts: 28945 },
+        { name: 'Истории игроков', topics: 876, posts: 12456 },
+        { name: 'Флудилка', topics: 411, posts: 4277 }
+      ]
     },
     {
       id: 3,
-      title: 'Оптимизация производительности React приложений',
-      author: 'ReactMaster',
-      category: 'Разработка',
-      replies: 23,
-      views: 892,
-      likes: 67,
-      time: '1 день назад',
-      tags: ['react', 'optimization', 'performance']
+      name: 'Помощь игрокам',
+      icon: 'HelpCircle',
+      color: 'from-green-500 to-emerald-500',
+      description: 'Вопросы и ответы',
+      topics: 1872,
+      posts: 9234,
+      lastPost: { author: 'Helper_Alex', title: 'Как заработать быстро?', time: '12 минут назад' },
+      subforums: [
+        { name: 'Вопросы новичков', topics: 987, posts: 5432 },
+        { name: 'Гайды и обучение', topics: 543, posts: 2341 },
+        { name: 'FAQ', topics: 342, posts: 1461 }
+      ]
     },
     {
       id: 4,
-      title: 'Лучшие практики работы с базами данных',
-      author: 'DBGuru',
-      category: 'Базы данных',
-      replies: 34,
-      views: 1547,
-      likes: 112,
-      time: '2 дня назад',
-      tags: ['database', 'sql', 'postgresql']
+      name: 'Жалобы и предложения',
+      icon: 'Flag',
+      color: 'from-purple-500 to-pink-500',
+      description: 'Репорты и идеи',
+      topics: 934,
+      posts: 3456,
+      lastPost: { author: 'Player_456', title: 'Баг с инвентарем', time: '1 час назад' },
+      subforums: [
+        { name: 'Жалобы на игроков', topics: 456, posts: 1789 },
+        { name: 'Предложения', topics: 321, posts: 1234 },
+        { name: 'Баги', topics: 157, posts: 433 }
+      ]
+    },
+    {
+      id: 5,
+      name: 'Фракции',
+      icon: 'Users',
+      color: 'from-yellow-500 to-orange-500',
+      description: 'Все о фракциях',
+      topics: 567,
+      posts: 4532,
+      lastPost: { author: 'FractionLeader', title: 'Набор в LSPD', time: '30 минут назад' },
+      subforums: [
+        { name: 'Государственные', topics: 234, posts: 2341 },
+        { name: 'Криминал', topics: 198, posts: 1567 },
+        { name: 'Нелегальные', topics: 135, posts: 624 }
+      ]
+    },
+    {
+      id: 6,
+      name: 'Рынок',
+      icon: 'ShoppingCart',
+      color: 'from-indigo-500 to-purple-500',
+      description: 'Покупка и продажа',
+      topics: 2341,
+      posts: 8765,
+      lastPost: { author: 'Seller_Pro', title: 'Продаю бизнес', time: '15 минут назад' },
+      subforums: [
+        { name: 'Продажа', topics: 1234, posts: 4532 },
+        { name: 'Покупка', topics: 876, posts: 3021 },
+        { name: 'Обмен', topics: 231, posts: 1212 }
+      ]
     }
   ];
 
-  const users = [
-    { name: 'DarkCoder', posts: 234, reputation: 8900, avatar: 'DC', online: true },
-    { name: 'ReactMaster', posts: 189, reputation: 7200, avatar: 'RM', online: true },
-    { name: 'AdminTeam', posts: 567, reputation: 15000, avatar: 'AT', online: false },
-    { name: 'DBGuru', posts: 445, reputation: 12300, avatar: 'DG', online: true },
-    { name: 'CodeNinja', posts: 312, reputation: 9800, avatar: 'CN', online: false },
-    { name: 'DevPro', posts: 276, reputation: 8500, avatar: 'DP', online: true }
-  ];
-
-  const news = [
-    {
-      id: 1,
-      title: 'Релиз новой версии платформы',
-      content: 'Мы рады представить версию 2.0 с улучшенным интерфейсом и новыми возможностями',
-      date: '3 янв 2026',
-      reactions: 245,
-      comments: 67
-    },
-    {
-      id: 2,
-      title: 'Конкурс на лучший проект месяца',
-      content: 'Участвуйте в конкурсе и выигрывайте ценные призы. Приём заявок до конца месяца',
-      date: '2 янв 2026',
-      reactions: 189,
-      comments: 43
-    },
-    {
-      id: 3,
-      title: 'Техническое обслуживание серверов',
-      content: 'Плановые работы пройдут 5 января с 02:00 до 04:00 по МСК. Возможны кратковременные перебои',
-      date: '1 янв 2026',
-      reactions: 56,
-      comments: 12
-    }
-  ];
+  const stats = {
+    totalTopics: 9280,
+    totalPosts: 74006,
+    totalMembers: 15678,
+    newestMember: 'NewPlayer_2026',
+    onlineNow: 234
+  };
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
-                <Icon name="Zap" size={24} className="text-white" />
+      <header className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-b border-gray-700 shadow-xl">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between py-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
+                <Icon name="Flame" size={28} className="text-white" />
               </div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                BlackRush Forum
-              </h1>
+              <div>
+                <h1 className="text-2xl font-bold text-white">BLACK RUSSIA</h1>
+                <p className="text-xs text-gray-400">Официальный форум проекта</p>
+              </div>
             </div>
-            <nav className="hidden md:flex gap-6">
-              <button
-                onClick={() => setActiveSection('home')}
-                className={`flex items-center gap-2 transition-colors ${
-                  activeSection === 'home' ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                <Icon name="Home" size={18} />
-                <span>Главная</span>
-              </button>
-              <button
-                onClick={() => setActiveSection('users')}
-                className={`flex items-center gap-2 transition-colors ${
-                  activeSection === 'users' ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                <Icon name="Users" size={18} />
-                <span>Пользователи</span>
-              </button>
-              <button
-                onClick={() => setActiveSection('news')}
-                className={`flex items-center gap-2 transition-colors ${
-                  activeSection === 'news' ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                <Icon name="Newspaper" size={18} />
-                <span>Новости</span>
-              </button>
-            </nav>
-            <Button className="bg-gradient-to-r from-primary to-secondary hover:opacity-90">
-              <Icon name="LogIn" size={18} className="mr-2" />
-              Войти
-            </Button>
+            <div className="flex items-center gap-3">
+              <Button variant="outline" className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white">
+                <Icon name="LogIn" size={16} className="mr-2" />
+                Вход
+              </Button>
+              <Button className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white shadow-lg">
+                <Icon name="UserPlus" size={16} className="mr-2" />
+                Регистрация
+              </Button>
+            </div>
           </div>
+          
+          <nav className="flex gap-1 pb-3 overflow-x-auto">
+            <Button variant="ghost" className="text-white hover:bg-gray-800 text-sm">
+              <Icon name="Home" size={16} className="mr-2" />
+              Главная
+            </Button>
+            <Button variant="ghost" className="text-gray-400 hover:text-white hover:bg-gray-800 text-sm">
+              <Icon name="Search" size={16} className="mr-2" />
+              Поиск
+            </Button>
+            <Button variant="ghost" className="text-gray-400 hover:text-white hover:bg-gray-800 text-sm">
+              <Icon name="Users" size={16} className="mr-2" />
+              Участники
+            </Button>
+            <Button variant="ghost" className="text-gray-400 hover:text-white hover:bg-gray-800 text-sm">
+              <Icon name="Calendar" size={16} className="mr-2" />
+              Календарь
+            </Button>
+            <Button variant="ghost" className="text-gray-400 hover:text-white hover:bg-gray-800 text-sm">
+              <Icon name="HelpCircle" size={16} className="mr-2" />
+              Помощь
+            </Button>
+          </nav>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
-        {activeSection === 'home' && (
-          <div className="space-y-6 animate-fade-in">
-            <div className="flex items-center justify-between">
-              <h2 className="text-3xl font-bold">Активные обсуждения</h2>
-              <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
-                <Icon name="Plus" size={18} className="mr-2" />
-                Создать тему
-              </Button>
-            </div>
-
-            <Tabs defaultValue="all" className="w-full">
-              <TabsList className="bg-muted">
-                <TabsTrigger value="all">Все темы</TabsTrigger>
-                <TabsTrigger value="popular">Популярные</TabsTrigger>
-                <TabsTrigger value="recent">Недавние</TabsTrigger>
-              </TabsList>
-              <TabsContent value="all" className="space-y-4 mt-6">
-                {topics.map((topic) => (
-                  <Card
-                    key={topic.id}
-                    className="p-6 bg-card hover:bg-card/80 transition-all duration-300 hover:scale-[1.01] border-border hover:border-primary/50 cursor-pointer group"
-                  >
-                    <div className="flex gap-4">
-                      <div className="flex-1 space-y-3">
-                        <div className="flex items-start justify-between gap-4">
-                          <h3 className="text-xl font-semibold group-hover:text-primary transition-colors">
-                            {topic.title}
-                          </h3>
-                          <Badge variant="outline" className="border-accent text-accent whitespace-nowrap">
-                            {topic.category}
-                          </Badge>
-                        </div>
-
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <div className="flex items-center gap-2">
-                            <Avatar className="w-6 h-6">
-                              <AvatarFallback className="text-xs bg-gradient-to-br from-primary to-secondary text-white">
-                                {topic.author.slice(0, 2).toUpperCase()}
-                              </AvatarFallback>
-                            </Avatar>
-                            <span>{topic.author}</span>
-                          </div>
-                          <span>•</span>
-                          <span>{topic.time}</span>
-                        </div>
-
-                        <div className="flex flex-wrap gap-2">
-                          {topic.tags.map((tag) => (
-                            <Badge key={tag} variant="secondary" className="bg-muted text-muted-foreground hover:bg-muted/80">
-                              #{tag}
-                            </Badge>
-                          ))}
-                        </div>
-
-                        <div className="flex items-center gap-6 text-sm">
-                          <div className="flex items-center gap-2 text-primary">
-                            <Icon name="Heart" size={16} />
-                            <span className="font-medium">{topic.likes}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-muted-foreground">
-                            <Icon name="MessageSquare" size={16} />
-                            <span>{topic.replies}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-muted-foreground">
-                            <Icon name="Eye" size={16} />
-                            <span>{topic.views}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </Card>
-                ))}
-              </TabsContent>
-            </Tabs>
+      <div className="bg-gradient-to-r from-red-950/30 to-orange-950/30 border-b border-gray-800">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center gap-2 text-sm text-gray-400">
+            <Icon name="Home" size={14} />
+            <span className="text-gray-500">/</span>
+            <span className="text-gray-300">Форум</span>
           </div>
-        )}
+        </div>
+      </div>
 
-        {activeSection === 'users' && (
-          <div className="space-y-6 animate-fade-in">
-            <h2 className="text-3xl font-bold">Участники сообщества</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {users.map((user) => (
-                <Card
-                  key={user.name}
-                  className="p-6 bg-card hover:bg-card/80 transition-all duration-300 hover:scale-[1.02] border-border hover:border-primary/50 cursor-pointer"
+      <main className="container mx-auto px-4 py-6">
+        <div className="grid lg:grid-cols-4 gap-6">
+          <div className="lg:col-span-3 space-y-4">
+            {categories.map((category) => (
+              <Card key={category.id} className="bg-card border-border overflow-hidden">
+                <div 
+                  className={`p-4 bg-gradient-to-r ${category.color} cursor-pointer`}
+                  onClick={() => setExpandedCategory(expandedCategory === category.id ? null : category.id)}
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="relative">
-                      <Avatar className="w-16 h-16">
-                        <AvatarFallback className="text-lg bg-gradient-to-br from-primary to-secondary text-white font-semibold">
-                          {user.avatar}
-                        </AvatarFallback>
-                      </Avatar>
-                      {user.online && (
-                        <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-accent rounded-full border-2 border-card" />
-                      )}
-                    </div>
-                    <div className="flex-1 space-y-2">
-                      <h3 className="text-lg font-semibold">{user.name}</h3>
-                      <div className="space-y-1 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-2">
-                          <Icon name="MessageSquare" size={14} />
-                          <span>{user.posts} постов</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Icon name="Award" size={14} />
-                          <span className="text-primary font-medium">{user.reputation} репутации</span>
-                        </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center">
+                        <Icon name={category.icon as any} size={20} className="text-white" />
+                      </div>
+                      <div>
+                        <h2 className="text-xl font-bold text-white">{category.name}</h2>
+                        <p className="text-sm text-white/80">{category.description}</p>
                       </div>
                     </div>
+                    <Icon 
+                      name={expandedCategory === category.id ? "ChevronUp" : "ChevronDown"} 
+                      size={20} 
+                      className="text-white"
+                    />
                   </div>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
+                </div>
 
-        {activeSection === 'news' && (
-          <div className="space-y-6 animate-fade-in">
-            <h2 className="text-3xl font-bold">Новости платформы</h2>
-            <div className="space-y-4">
-              {news.map((item) => (
-                <Card
-                  key={item.id}
-                  className="p-6 bg-card hover:bg-card/80 transition-all duration-300 hover:scale-[1.01] border-border hover:border-accent/50 cursor-pointer"
-                >
-                  <div className="space-y-4">
-                    <div className="flex items-start justify-between gap-4">
-                      <h3 className="text-2xl font-semibold">{item.title}</h3>
-                      <Badge variant="outline" className="border-accent text-accent">
-                        {item.date}
-                      </Badge>
-                    </div>
-                    <p className="text-muted-foreground leading-relaxed">{item.content}</p>
-                    <div className="flex items-center gap-6 text-sm pt-2">
-                      <div className="flex items-center gap-2 text-primary">
-                        <Icon name="ThumbsUp" size={16} />
-                        <span className="font-medium">{item.reactions}</span>
+                {expandedCategory === category.id && (
+                  <div className="divide-y divide-border">
+                    {category.subforums.map((subforum) => (
+                      <div key={subforum.name} className="p-4 hover:bg-muted/50 transition-colors cursor-pointer">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3 flex-1">
+                            <div className="w-8 h-8 bg-muted rounded-lg flex items-center justify-center">
+                              <Icon name="MessageSquare" size={16} className="text-muted-foreground" />
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-foreground">{subforum.name}</h3>
+                              <div className="flex items-center gap-4 text-xs text-muted-foreground mt-1">
+                                <span>Тем: {subforum.topics}</span>
+                                <span>•</span>
+                                <span>Сообщений: {subforum.posts}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="p-4 bg-muted/30 border-t border-border">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-6 text-sm">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Icon name="FileText" size={16} />
+                        <span>{category.topics} тем</span>
                       </div>
                       <div className="flex items-center gap-2 text-muted-foreground">
-                        <Icon name="MessageCircle" size={16} />
-                        <span>{item.comments}</span>
+                        <Icon name="MessageSquare" size={16} />
+                        <span>{category.posts} сообщений</span>
+                      </div>
+                    </div>
+                    <div className="text-sm">
+                      <div className="flex items-center gap-2">
+                        <Avatar className="w-6 h-6">
+                          <AvatarFallback className="text-xs bg-gradient-to-br from-gray-700 to-gray-800 text-white">
+                            {category.lastPost.author.slice(0, 2).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="text-right">
+                          <p className="font-medium text-foreground text-xs">{category.lastPost.title}</p>
+                          <p className="text-xs text-muted-foreground">
+                            от {category.lastPost.author} • {category.lastPost.time}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </Card>
-              ))}
-            </div>
+                </div>
+              </Card>
+            ))}
           </div>
-        )}
+
+          <div className="space-y-4">
+            <Card className="p-4 bg-card border-border">
+              <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+                <Icon name="BarChart3" size={18} className="text-primary" />
+                Статистика форума
+              </h3>
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Всего тем:</span>
+                  <span className="font-semibold text-foreground">{stats.totalTopics.toLocaleString()}</span>
+                </div>
+                <Separator />
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Сообщений:</span>
+                  <span className="font-semibold text-foreground">{stats.totalPosts.toLocaleString()}</span>
+                </div>
+                <Separator />
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Участников:</span>
+                  <span className="font-semibold text-foreground">{stats.totalMembers.toLocaleString()}</span>
+                </div>
+                <Separator />
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Новый участник:</span>
+                  <span className="font-semibold text-primary text-xs">{stats.newestMember}</span>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-4 bg-gradient-to-br from-green-950/50 to-emerald-950/50 border-green-900">
+              <h3 className="font-bold text-lg mb-3 flex items-center gap-2 text-green-400">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                Сейчас на форуме
+              </h3>
+              <div className="space-y-3 text-sm">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-300">Пользователей онлайн:</span>
+                  <Badge className="bg-green-600 text-white">{stats.onlineNow}</Badge>
+                </div>
+                <Separator className="bg-green-900/50" />
+                <div className="text-xs text-gray-400">
+                  <p>Рекорд: 1,234 пользователя</p>
+                  <p className="text-gray-500">31 декабря 2025</p>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-4 bg-card border-border">
+              <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
+                <Icon name="Crown" size={18} className="text-yellow-500" />
+                Топ авторов
+              </h3>
+              <div className="space-y-2">
+                {[
+                  { name: 'AdminPro', posts: 5432, avatar: 'AP' },
+                  { name: 'Player_Legend', posts: 3421, avatar: 'PL' },
+                  { name: 'Helper_Max', posts: 2876, avatar: 'HM' }
+                ].map((user, idx) => (
+                  <div key={user.name} className="flex items-center gap-2 text-sm">
+                    <Badge variant="outline" className="w-6 h-6 p-0 flex items-center justify-center text-xs">
+                      {idx + 1}
+                    </Badge>
+                    <Avatar className="w-7 h-7">
+                      <AvatarFallback className="text-xs bg-gradient-to-br from-gray-700 to-gray-800 text-white">
+                        {user.avatar}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="flex-1 text-foreground">{user.name}</span>
+                    <span className="text-muted-foreground text-xs">{user.posts}</span>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </div>
+        </div>
       </main>
 
-      <footer className="border-t border-border bg-card/30 mt-16">
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-            <p>© 2026 BlackRush Forum. Все права защищены</p>
+      <footer className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-t border-gray-700 mt-12">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-400">
+            <p>© 2026 Black Russia Forum. Все права защищены</p>
             <div className="flex items-center gap-4">
-              <a href="#" className="hover:text-primary transition-colors">Правила</a>
+              <a href="#" className="hover:text-white transition-colors">Правила форума</a>
               <span>•</span>
-              <a href="#" className="hover:text-primary transition-colors">Поддержка</a>
+              <a href="#" className="hover:text-white transition-colors">Поддержка</a>
               <span>•</span>
-              <a href="#" className="hover:text-primary transition-colors">API</a>
+              <a href="#" className="hover:text-white transition-colors">Контакты</a>
             </div>
           </div>
         </div>
